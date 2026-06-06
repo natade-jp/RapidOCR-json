@@ -45,3 +45,35 @@
 ```text
 RapidOCR-json.exe --models=models --det=ch_PP-OCRv3_det_infer.onnx --cls=ch_ppocr_mobile_v2.0_cls_infer.onnx --rec=ch_PP-OCRv3_rec_infer.onnx --keys=ppocr_keys_v1.txt --image=test.png
 ```
+
+## 3. utf-8 オプションについて
+
+C++コンパイラーへ`/utf-8`オプションを指定する必要があります。
+ソリューション エクスプローラーで`RapidOcrOnnx`プロジェクトのプロパティを開き、次の場所へ移動します。
+
+```text
+構成プロパティ
+  → C/C++
+    → コマンド ライン
+      → 追加のオプション
+```
+
+追加のオプションへ、次を指定します。
+
+```text
+/utf-8
+```
+
+`/utf-8`は、ソースコードと実行時文字列の文字コードをUTF-8として扱うコンパイルオプションです。
+
+一方、［Unicode文字セットを使用する］は、主にWindows APIの`A`版と`W`版の切り替えに使用されます。
+
+```text
+Unicode文字セット
+    Windows APIでUnicode版の関数を使用するための設定
+
+/utf-8
+    ソースコードとchar文字列リテラルをUTF-8として扱うための設定
+```
+
+そのため、日本語の`fprintf`や`std::cout`をUTF-8コンソールへ出力する場合は、`/utf-8`の設定が必要です。
