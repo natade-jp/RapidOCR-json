@@ -1,233 +1,357 @@
-#### 离线OCR组件 系列项目：
+#### オフラインOCRコンポーネント関連プロジェクト
+
 - [PaddleOCR-json](https://github.com/hiroi-sora/PaddleOCR-json)
 - **RapidOCR-json**
 
-|                  | PaddleOCR-json                                  | RapidOCR-json        |
-| ---------------- | ----------------------------------------------- | -------------------- |
-| CPU要求          | CPU必须具有AVX指令集。不支持以下CPU：           | 无特殊要求 👍         |
-|                  | 凌动Atom，安腾Itanium，赛扬Celeron，奔腾Pentium |                      |
-| 推理加速库       | mkldnn 👍                                        | 无                   |
-| 识别速度         | 快（启用mkldnn加速）👍                           | 中等                 |
-|                  | 极慢（不启用mkldnn）                            |                      |
-| 初始化耗时       | 约2s，慢                                        | 0.1s内，快 👍         |
-| 组件体积（压缩） | 52MB                                            | 15MB 👍               |
-| 组件体积（部署） | 250MB                                           | 30MB 👍               |
-| CPU占用          | 高，榨干硬件性能                                | 较低，对低配机器友好 |
-| 内存占用峰值     | >2000MB（启用mkldnn）                           | ~500MB 👍             |
-|                  | ~600MB（不启用mkldnn）                          |                      |
-
----
+| 項目                         | PaddleOCR-json                                                              | RapidOCR-json                            |
+| ---------------------------- | --------------------------------------------------------------------------- | ---------------------------------------- |
+| CPU要件                      | CPUがAVX命令セットに対応している必要があります。次のCPUには対応していません | 特別な要件なし 👍                        |
+|                              | Atom、Itanium、Celeron、Pentium                                             |                                          |
+| 推論高速化ライブラリ         | mkldnn 👍                                                                   | なし                                     |
+| 認識速度                     | 高速（mkldnn有効時）👍                                                      | 標準的                                   |
+|                              | 非常に低速（mkldnn無効時）                                                  |                                          |
+| 初期化時間                   | 約2秒で遅め                                                                 | 0.1秒以内で高速 👍                       |
+| コンポーネント容量（圧縮時） | 52MB                                                                        | 15MB 👍                                  |
+| コンポーネント容量（展開時） | 250MB                                                                       | 30MB 👍                                  |
+| CPU使用率                    | 高く、ハードウェア性能を最大限使用                                          | 比較的低く、低スペック環境にも適している |
+| メモリ使用量のピーク         | 2,000MB超（mkldnn有効時）                                                   | 約500MB 👍                               |
+|                              | 約600MB（mkldnn無効時）                                                     |                                          |
 
 # RapidOCR-json
 
-这是一个基于 [RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx) 的离线图片OCR文字识别程序。通过管道等方式输入本地图片路径，输出识别结果json字符串。适用于 `Win7 x64` 及以上的系统。
+これは、[RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)をベースにした、オフライン画像OCR文字認識プログラムです。パイプなどを通してローカル画像のパスを入力し、認識結果をJSON文字列として出力します。`Windows 7 x64`以降のシステムに対応しています。
 
-本项目旨在提供一个封装好的OCR引擎组件，使得没有C++编程基础的用户也可以用别的语言来简单地调用OCR，享受到更快的运行效率、更便捷的打包&部署手段。
+本プロジェクトは、パッケージ化されたOCRエンジンコンポーネントを提供することを目的としています。C++のプログラミング知識がない利用者でも、ほかの言語から簡単にOCRを呼び出せます。また、高速な実行性能と、より簡単なパッケージ化・配布方法を利用できます。
 
 ![](/readme_images/img-1.png)
 
-## 准备工作
+## 準備
 
-下载 [RapidOCR-json v0.2.0](https://github.com/hiroi-sora/RapidOCR-json/releases/tag/v0.2.0) 并解压，即可。
+[RapidOCR-json v0.2.0](https://github.com/hiroi-sora/RapidOCR-json/releases/tag/v0.2.0)をダウンロードして展開するだけで使用できます。
 
-### 简单试用
+### 簡単な使い方
 
-方式一：
+方法1：
 
-打开控制台，输入 `path/RapidOCR-json.exe --image_path=path/test1.png` 。
+コンソールを開き、次のコマンドを入力します。
 
-方式二：
-
-直接双击打开 `RapidOCR_json.exe` 。等程序初始化完毕输出`OCR init completed.`。
-
-使用json字符串输入图片路径，建议使用ascii转义。如：
-
-`{"image_path":"D:/\u6d4b\u8bd5\u56fe\u7247.png"}`
-
-也支持传入图片base64编码的字符串。如：
-
-`{"image_base64":"……"}`
-
-还可以直接使用 [Python API](api/python/) 。
-
-
-## 指令说明
-
-| 键名称         | 值说明                               | 默认值                                |
-| -------------- | ------------------------------------ | ------------------------------------- |
-| ensureAscii    | 启用(1)/禁用(0) ASCII转义输出        | 0                                     |
-| models         | 模型目录地址，可绝对or相对路径       | "models"                              |
-| det            | det库名称                            | "ch_PP-OCRv3_det_infer.onnx"          |
-| cls            | cls库名称                            | "ch_ppocr_mobile_v2.0_cls_infer.onnx" |
-| rec            | rec库名称                            | "ch_PP-OCRv3_rec_infer.onnx"          |
-| keys           | rec字典名称                          | "ppocr_keys_v1.txt"                   |
-| doAngle        | 启用(1)/禁用(0) 文字方向检测         | 1                                     |
-| mostAngle      | 启用(1)/禁用(0) 角度投票             | 1                                     |
-| numThread      | 线程数                               | 4                                     |
-| padding        | 预处理白边宽度，可优化窄边图片识别率 | 50                                    |
-| maxSideLen     | 图片长边缩小值，可提高大图速度       | 1024                                  |
-| boxScoreThresh | 文字框置信度门限值                   | 0.5                                   |
-| boxThresh      |                                      | 0.3                                   |
-| unClipRatio    | 单个文字框大小倍率                   | 1.6                                   |
-| image_path     | 初始图片路径                         | ""                                    |
-
-
-例1：（启动时传入图片路径，执行一次识别，然后关闭程序）
-```
-RapidOCR_json.exe  --image_path="D:/images/test(1).png"
-输出: 识别结果
+```text
+path/RapidOCR-json.exe --image_path=path/test1.png
 ```
 
-例2：（启动时不传入图片路径，进入无限循环，不断接受json输入）
+方法2：
+
+`RapidOCR_json.exe`を直接ダブルクリックして起動します。プログラムの初期化が完了すると、`OCR init completed.`と出力されます。
+
+JSON文字列で画像パスを入力します。ASCIIエスケープの使用を推奨します。
+
+```json
+{ "image_path": "D:/\u6d4b\u8bd5\u56fe\u7247.png" }
 ```
-RapidOCR_json.exe  --ensureAscii=1
-输出: OCR init completed.
+
+画像をBase64エンコードした文字列を渡すこともできます。
+
+```json
+{ "image_base64": "……" }
+```
+
+[Python API](api/python/)を直接使用することもできます。
+
+## コマンドオプション
+
+| キー名         | 説明                                                             | デフォルト値                            |
+| -------------- | ---------------------------------------------------------------- | --------------------------------------- |
+| ensureAscii    | ASCIIエスケープ出力を有効化（1）または無効化（0）                | 0                                       |
+| models         | モデルディレクトリのパス。絶対パスまたは相対パスを指定可能       | `"models"`                              |
+| det            | 文字検出モデルのファイル名                                       | `"ch_PP-OCRv3_det_infer.onnx"`          |
+| cls            | 文字方向分類モデルのファイル名                                   | `"ch_ppocr_mobile_v2.0_cls_infer.onnx"` |
+| rec            | 文字認識モデルのファイル名                                       | `"ch_PP-OCRv3_rec_infer.onnx"`          |
+| keys           | 文字認識用辞書のファイル名                                       | `"ppocr_keys_v1.txt"`                   |
+| doAngle        | 文字方向検出を有効化（1）または無効化（0）                       | 1                                       |
+| mostAngle      | 角度投票を有効化（1）または無効化（0）                           | 1                                       |
+| numThread      | スレッド数                                                       | 4                                       |
+| padding        | 前処理で追加する白い余白の幅。幅の狭い画像の認識率改善に使用可能 | 50                                      |
+| maxSideLen     | 画像の長辺を縮小する上限値。大きな画像の処理速度改善に使用可能   | 1024                                    |
+| boxScoreThresh | 文字領域の信頼度しきい値                                         | 0.5                                     |
+| boxThresh      | 文字領域検出のしきい値                                           | 0.3                                     |
+| unClipRatio    | 1つの文字領域を拡張する倍率                                      | 1.6                                     |
+| image_path     | 起動時に認識する画像のパス                                       | `""`                                    |
+
+例1：起動時に画像パスを渡し、1回だけ認識してプログラムを終了します。
+
+```text
+RapidOCR_json.exe --image_path="D:/images/test(1).png"
+出力：認識結果
+```
+
+例2：起動時に画像パスを渡さず、無限ループでJSON入力を受け付けます。
+
+```text
+RapidOCR_json.exe --ensureAscii=1
+出力：OCR init completed.
 {"image_path": "D:/images/test(1).png"}
-输出: 识别结果
+出力：認識結果
 ```
 
-例3：（手动指定参数）
-```
+例3：各パラメーターを手動で指定します。
+
+```text
 RapidOCR_json.exe --doAngle=0 --mostAngle=0 --numThread=12 --padding=100 --image_path="D:/images/test(1).png"
 ```
 
+## 戻り値
 
-## 返回值说明
+APIからOCRを1回呼び出すたびに、成功・失敗にかかわらずオブジェクトが返されます。
 
-通过API调用一次OCR，无论成功与否，都会返回一个字典。
+ルートには、状態コードを表す`code`と、内容を表す`data`の2つの要素があります。
 
-字典中，根含两个元素：状态码`code`和内容`data`。
+`code`は整数で、値ごとに状態が定義されています。
 
-状态码`code`为整数，每种状态码对应一种情况：
+##### `100` 文字を認識した
 
-##### `100` 识别到文字
+- `data`は配列です
+- 配列の各要素は、次の3つの要素を持つオブジェクトです
+    - `text`：認識した文字列
+    - `box`：文字領域を囲む四角形の座標。左上、右上、右下、左下の順に、4つの`[x, y]`を格納
+    - `score`：認識結果の信頼度を表す浮動小数点数
 
-- data内容为数组。数组每一项为字典，含三个元素：
-  - `text` ：文本内容，字符串。
-  - `box` ：文本包围盒，长度为4的数组，分别为左上角、右上角、右下角、左下角的`[x,y]`。整数。
-  - `score` ：识别置信度，浮点数。
-- 例：
-  ```
-    {'code':100,'data':[{'box':[[13,5],[161,5],[161,27],[13,27]],'score':0.9996442794799805,'text':'飞舞的因果交流'}]}
-  ```
+例：
 
-##### `101` 未识别到文字
+```json
+{
+	"code": 100,
+	"data": [
+		{
+			"box": [
+				[13, 5],
+				[161, 5],
+				[161, 27],
+				[13, 27]
+			],
+			"score": 0.9996442794799805,
+			"text": "飞舞的因果交流"
+		}
+	]
+}
+```
 
-- data为字符串：`No text found in image. Path:"图片路径"`
-- 例：```{'code':101,'data':'No text found in image. Path: "D:\\空白.png"'}```
-- 这是正常现象，识别没有文字的空白图片时会出现这种结果。
+##### `101` 文字を認識できなかった
 
-##### `200` 图片路径不存在
+- `data`には次の形式の文字列が格納されます
 
-- data为字符串：`Image path dose not exist. Path:"图片路径".`
-- 例：`{'code':200,'data':'Image path dose not exist. Path: "D:\\不存在.png"'}`
-- 注意，在系统未开启utf-8支持（`使用 Unicode UTF-8 提供全球语言支持"`）时，不能读入含emoji等特殊字符的路径（如`😀.png`）。但一般的中文及其他 Unicode 字符路径是没问题的，不受系统区域及默认编码影响。
+```text
+No text found in image. Path:"画像パス"
+```
 
-##### `201` 图片路径string无法转换到wstring
+例：
 
-- data为字符串：`Image path failed to convert to utf-16 wstring. Path: "图片路径".`
-- 使用API时，理论上不会报这个错。
-- 开发API时，若传入字符串的编码不合法，有可能报这个错。
+```json
+{
+	"code": 101,
+	"data": "No text found in image. Path: \"D:\\空白.png\""
+}
+```
 
-##### `202` 图片路径存在，但无法打开文件
+これは正常な結果です。文字が含まれていない空白画像を認識した場合などに返されます。
 
-- data为字符串：`Image open failed. Path: "图片路径".`
-- 可能由系统权限等原因引起。
+##### `200` 画像パスが存在しない
 
-##### `203` 图片打开成功，但读取到的内容无法被opencv解码
+- `data`には次の形式の文字列が格納されます
 
-- data为字符串：`Image decode failed. Path: "图片路径".`
-- 注意，引擎不以文件后缀来区分各种图片，而是对存在的路径，均读入字节尝试解码。若传入的文件路径不是图片，或图片已损坏，则会报这个错。
-- 反之，将正常图片的后缀改为别的（如`.png`改成`.jpg或.exe`），也可以被正常识别。
+```text
+Image path dose not exist. Path:"画像パス".
+```
 
-##### `210` 剪贴板打开失败
+例：
 
-- data为字符串：`Clipboard open failed.`
-- 可能由别的程序正在占用剪贴板等原因引起。
+```json
+{
+	"code": 200,
+	"data": "Image path dose not exist. Path: \"D:\\不存在.png\""
+}
+```
 
-##### `211` 剪贴板为空
+システムでUTF-8サポートの「ワールドワイド言語サポートでUnicode UTF-8を使用」が有効になっていない場合、`😀.png`のように絵文字などの特殊文字を含むパスは読み込めません。
 
-- data为字符串：`Clipboard is empty.`
+一般的な中国語やその他のUnicode文字を含むパスは、システムの地域設定や既定の文字コードにかかわらず使用できます。
 
-##### `212` 剪贴板的格式不支持
+##### `201` 画像パスの文字列を`wstring`へ変換できなかった
 
-- data为字符串：`Clipboard format is not valid.`
-- 引擎只能识别剪贴板中的位图或文件。若不是这两种格式（如复制了一段文本），则会报这个错。
+- `data`には次の形式の文字列が格納されます
 
-##### `213` 剪贴板获取内容句柄失败
+```text
+Image path failed to convert to utf-16 wstring. Path: "画像パス".
+```
 
-- data为字符串：`Getting clipboard data handle failed.`
-- 可能由别的程序正在占用剪贴板等原因引起。
+APIを通常どおり使用している場合、基本的には発生しません。
 
-##### `214` 剪贴板查询到的文件的数量不为1
+APIの開発時に、不正な文字コードの文字列を渡した場合に発生する可能性があります。
 
-- data为字符串：`Clipboard number of query files is not valid. Number: 文件数量`
-- 只允许一次复制一个文件。一次复制多个文件再调用OCR会得到此报错。
+##### `202` 画像パスは存在するが、ファイルを開けなかった
 
-##### `215` 剪贴板检索图形对象信息失败
+- `data`には次の形式の文字列が格納されます
 
-- data为字符串：`Clipboard get bitmap object failed.`
-- 剪贴板中是位图，但获取位图信息失败。可能由别的程序正在占用剪贴板等原因引起。
+```text
+Image open failed. Path: "画像パス".
+```
 
-##### `216` 剪贴板获取位图数据失败
+システムのアクセス権限などが原因で発生する可能性があります。
 
-- data为字符串：`Getting clipboard bitmap bits failed.`
-- 剪贴板中是位图，获取位图信息成功，但读入缓冲区失败。可能由别的程序正在占用剪贴板等原因引起。
+##### `203` 画像を開けたが、読み込んだ内容をOpenCVでデコードできなかった
 
-##### `217` 剪贴板中位图的通道数不支持
+- `data`には次の形式の文字列が格納されます
 
-- data为字符串：`Clipboard number of image channels is not valid. Number: 通道数`
-- 引擎只允许读入通道为1（黑白）、3（RGB）、4（RGBA）的图片。位图通道数不是1、3或4，会报这个错。
+```text
+Image decode failed. Path: "画像パス".
+```
 
-##### `299` 未知异常
+このエンジンは、ファイルの拡張子で画像形式を判定しません。指定されたパスからファイルのバイト列を読み込み、画像としてデコードを試みます。
 
-- data为字符串：`An unknown error has occurred.`
-- 正常情况下不应该出现此状态码。请提issue。
+そのため、指定したファイルが画像ではない場合や、画像が破損している場合にこのエラーが返されます。
 
-##### `300` 返回数据无法转换为json字符串
+一方、正常な画像の拡張子を`.png`から`.jpg`や`.exe`などに変更しても、画像としてデコードできれば正常に認識されます。
 
-- data为字符串：`JSON dump failed. Coding error.`
-- 通过启动参数-image_dir传入非法编码的路径（含中文）时引起。（中文路径应该先启动程序再输入）
+##### `210` クリップボードを開けなかった
 
+- `data`には次の文字列が格納されます
 
-## 通过API调用
+```text
+Clipboard open failed.
+```
+
+ほかのプログラムがクリップボードを使用している場合などに発生する可能性があります。
+
+##### `211` クリップボードが空だった
+
+- `data`には次の文字列が格納されます
+
+```text
+Clipboard is empty.
+```
+
+##### `212` クリップボードの形式に対応していない
+
+- `data`には次の文字列が格納されます
+
+```text
+Clipboard format is not valid.
+```
+
+エンジンが認識できるクリップボードの内容は、ビットマップ画像またはファイルのみです。コピーしたテキストなど、これら以外の形式ではエラーになります。
+
+##### `213` クリップボードのデータハンドルを取得できなかった
+
+- `data`には次の文字列が格納されます
+
+```text
+Getting clipboard data handle failed.
+```
+
+ほかのプログラムがクリップボードを使用している場合などに発生する可能性があります。
+
+##### `214` クリップボード内のファイル数が1件ではなかった
+
+- `data`には次の形式の文字列が格納されます
+
+```text
+Clipboard number of query files is not valid. Number: ファイル数
+```
+
+一度にコピーできるファイルは1件だけです。複数のファイルをコピーした状態でOCRを呼び出すと、このエラーが返されます。
+
+##### `215` クリップボード内のビットマップ情報を取得できなかった
+
+- `data`には次の文字列が格納されます
+
+```text
+Clipboard get bitmap object failed.
+```
+
+クリップボード内にビットマップは存在しますが、その情報を取得できなかった場合に返されます。ほかのプログラムがクリップボードを使用している場合などに発生する可能性があります。
+
+##### `216` クリップボード内のビットマップデータを取得できなかった
+
+- `data`には次の文字列が格納されます
+
+```text
+Getting clipboard bitmap bits failed.
+```
+
+クリップボード内のビットマップ情報は取得できたものの、バッファーへの読み込みに失敗した場合に返されます。ほかのプログラムがクリップボードを使用している場合などに発生する可能性があります。
+
+##### `217` クリップボード内のビットマップのチャンネル数に対応していない
+
+- `data`には次の形式の文字列が格納されます
+
+```text
+Clipboard number of image channels is not valid. Number: チャンネル数
+```
+
+このエンジンが読み込める画像のチャンネル数は、1（白黒）、3（RGB）、4（RGBA）のいずれかです。それ以外のチャンネル数ではエラーになります。
+
+##### `299` 不明な例外
+
+- `data`には次の文字列が格納されます
+
+```text
+An unknown error has occurred.
+```
+
+通常は発生しない状態コードです。発生した場合はIssueを作成してください。
+
+##### `300` 戻り値をJSON文字列へ変換できなかった
+
+- `data`には次の文字列が格納されます
+
+```text
+JSON dump failed. Coding error.
+```
+
+起動引数`-image_dir`に、不正な文字コードを含むパスを渡した場合に発生します。
+
+中国語などを含むパスを使用する場合は、起動引数として渡すのではなく、プログラム起動後にJSONで入力してください。
+
+## APIからの呼び出し
 
 ### 1. Python API
 
-[资源目录](api/python)
+[リソースディレクトリ](api/python)
 
-使用示例：
+使用例：
+
 ```python
 import os
 import sys
 
 from RapidOCR_api import OcrAPI
 
-ocrPath = '引擎路径/RapidOCR_json.exe'
+ocrPath = 'エンジンのパス/RapidOCR_json.exe'
 ocr = OcrAPI(ocrPath)
-res = ocr.run('样例.png')
+res = ocr.run('サンプル.png')
 
-print('OCR识别结果：\n', res)
+print('OCR認識結果：\n', res)
 ocr.stop()
 ```
 
-其他待填坑……
+その他のAPIは今後追加予定です。
 
+## [プロジェクトのビルドガイド](cpp)
 
-## [项目构建指南](cpp)
-👆当你需要修改项目源码时欢迎参考。
+ソースコードを変更する場合はこちらを参照してください。
 
-## 感谢
+## 謝辞
 
-感谢 [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx) ，没有它就没有本项目。
+[RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)に感謝します。本プロジェクトは、このライブラリなしには実現できませんでした。
 
-本项目中使用了 [nlohmann/json](https://github.com/nlohmann/json) ：
-> “JSON for Modern C++”
+本プロジェクトでは、[nlohmann/json](https://github.com/nlohmann/json)を使用しています。
 
-## 更新日志
+> JSON for Modern C++
 
-#### v0.2.0 `2023.9.25` 
-- 路径识图的key由 `imagePath` 改为 `image_path`
-- 新功能：base64识图，key为 `image_base64`
+## 更新履歴
 
-#### v0.1.0 `2023.4.29` 
+#### v0.2.0 `2023-09-25`
+
+- 画像パスを指定するキーを`imagePath`から`image_path`へ変更
+- Base64画像認識機能を追加。キーは`image_base64`
+
+#### v0.1.0 `2023-04-29`
