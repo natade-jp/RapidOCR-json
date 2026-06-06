@@ -27,8 +27,8 @@ namespace tool {
     string modelsDir = "models"; // モデル格納ディレクトリ
     string modelDetPath = "ch_PP-OCRv3_det_infer.onnx"; // デフォルトの文字検出モデル
     string modelClsPath = "ch_ppocr_mobile_v2.0_cls_infer.onnx"; // デフォルトの文字方向分類モデル
-    string modelRecPath = "ch_PP-OCRv3_rec_infer.onnx"; // デフォルトの文字認識モデル
-    string keysPath = "ppocr_keys_v1.txt"; // デフォルトの辞書ファイル
+    string modelRecPath = "rec_japan_PP-OCRv3_infer.onnx"; // デフォルトの文字認識モデル
+    string keysPath = "dict_japan.txt"; // デフォルトの辞書ファイル
     int numThread = 4; // スレッド数
     int flagGpu = -1; // 使用するGPU番号（使用しない場合は-1）
 

@@ -65,7 +65,7 @@ JSON文字列で画像パスを入力します。ASCIIエスケープの使用�
 | models         | モデルディレクトリのパス。絶対パスまたは相対パスを指定可能       | `"models"`                              |
 | det            | 文字検出モデルのファイル名                                       | `"ch_PP-OCRv3_det_infer.onnx"`          |
 | cls            | 文字方向分類モデルのファイル名                                   | `"ch_ppocr_mobile_v2.0_cls_infer.onnx"` |
-| rec            | 文字認識モデルのファイル名                                       | `"ch_PP-OCRv3_rec_infer.onnx"`          |
+| rec            | 文字認識モデルのファイル名                                       | `"rec_japan_PP-OCRv3_infer.onnx"`          |
 | keys           | 文字認識用辞書のファイル名                                       | `"ppocr_keys_v1.txt"`                   |
 | doAngle        | 文字方向検出を有効化（1）または無効化（0）                       | 1                                       |
 | mostAngle      | 角度投票を有効化（1）または無効化（0）                           | 1                                       |
