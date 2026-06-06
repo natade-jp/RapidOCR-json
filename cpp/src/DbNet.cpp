@@ -1,4 +1,4 @@
-#include "DbNet.h"
+﻿#include "DbNet.h"
 #include "OcrUtils.h"
 
 void DbNet::setGpuIndex(int gpuIndex) {
@@ -60,7 +60,7 @@ void DbNet::initModel(const std::string &pathStr) {
 
 std::vector<TextBox> findRsBoxes(const cv::Mat &predMat, const cv::Mat &dilateMat, ScaleParam &s,
                                  const float boxScoreThresh, const float unClipRatio) {
-    const int longSideThresh = 3;//minBox 长边门限
+    const int longSideThresh = 3; // minBoxの長辺のしきい値
     const int maxCandidates = 1000;
 
     std::vector<std::vector<cv::Point>> contours;

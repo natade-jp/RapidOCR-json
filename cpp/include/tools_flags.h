@@ -1,53 +1,70 @@
-#ifndef _tools_flags_
+﻿#ifndef _tools_flags_
 #define _tools_flags_
 
-// 程序内部使用，不输出的标志码
-#define CODE_INIT 0            // 每回合初始值，回合结束时仍为它代表受管控的区域内未发现错误
-#define CODE_ERR_MAT_NULL -999 // OCR读到的mat为空。借助 dbNetTime 来传递。
+// プログラム内部で使用し、外部には出力しないステータスコード
+#define CODE_INIT 0            // 各処理の初期値。処理終了時もこの値の場合、管理対象の範囲内でエラーが発生しなかったことを表す
+#define CODE_ERR_MAT_NULL -999 // OCRが読み込んだMatが空。dbNetTimeを使用して伝達する
 
-// 输出的标志码
+// 外部へ出力するステータスコード
 
-// 识别成功
-#define CODE_OK 100      // 成功，且识别出文字
-#define CODE_OK_NONE 101 // 成功，且未识别到文字
-#define MSG_OK_NONE "No text found in image."
-// 按路径读图，失败
-#define CODE_ERR_PATH_EXIST 200 // 图片路径不存在
-#define MSG_ERR_PATH_EXIST(p) "Image path dose not exist. Path: \"" + p + "\""
-#define CODE_ERR_PATH_CONV 201 // 图片路径string无法转换到wstring
-#define MSG_ERR_PATH_CONV(p) "Image path failed to convert to utf-16 wstring. Path: \"" + p + "\""
-#define CODE_ERR_PATH_READ 202 // 图片路径存在，但无法打开文件
-#define MSG_ERR_PATH_READ(p) "Image open failed. Path: \"" + p + "\""
-#define CODE_ERR_PATH_DECODE 203 // 图片打开成功，但读取到的内容无法被opencv解码
-#define MSG_ERR_PATH_DECODE(p) "Image decode failed. Path: \"" + p + "\""
-#define CODE_ERR_LOAD_JSON 204 // 加载JSON失败
-#define MSG_ERR_LOAD_JSON(p) "Failed to load the string into JSON. Input: \"" + p + "\""
-#define CODE_ERR_JSON_NO_IMAGE 205 // json中不存在图片
-#define MSG_ERR_JSON_NO_IMAGE(p) "No 'imagePath' element in the JSON string. Input: \"" + p + "\""
-// 剪贴板读图，失败
-#define CODE_ERR_CLIP_OPEN 210 // 剪贴板打开失败 ( OpenClipboard )
-#define MSG_ERR_CLIP_OPEN "Clipboard open failed."
-#define CODE_ERR_CLIP_EMPTY 211 // 剪贴板为空 ( GetPriorityClipboardFormat NULL )
-#define MSG_ERR_CLIP_EMPTY "Clipboard is empty."
-#define CODE_ERR_CLIP_FORMAT 212 // 剪贴板的格式不支持 ( GetPriorityClipboardFormat -1 )
-#define MSG_ERR_CLIP_FORMAT "Clipboard format is not valid."
-#define CODE_ERR_CLIP_DATA 213 // 剪贴板获取内容句柄失败，通常由别的程序占用剪贴板引起 ( GetClipboardData NULL )
-#define MSG_ERR_CLIP_DATA "Getting clipboard data handle failed."
-#define CODE_ERR_CLIP_FILES 214 // 剪贴板查询到的文件的数量不为1 ( DragQueryFile != 1 )
-#define MSG_ERR_CLIP_FILES(n) "Clipboard number of query files is not valid. Number: " + std::to_string(n)
-#define CODE_ERR_CLIP_GETOBJ 215 // 剪贴板检索图形对象信息失败 ( GetObject NULL )
-#define MSG_ERR_CLIP_GETOBJ "Clipboard get bitmap object failed."
-#define CODE_ERR_CLIP_BITMAP 216 // 剪贴板获取位图数据失败 ( GetBitmapBits 复制字节为空 )
-#define MSG_ERR_CLIP_BITMAP "Getting clipboard bitmap bits failed."
-#define CODE_ERR_CLIP_CHANNEL 217 // 剪贴板中位图的通道数不支持 ( nChannels 不为1，3，4 )
-#define MSG_ERR_CLIP_CHANNEL(n) "Clipboard number of image channels is not valid. Number: " + std::to_string(n)
-// base64读图，失败
-#define CODE_ERR_BASE64_DECODE 300 // base64字符串解析为string失败 
-#define MSG_ERR_BASE64_DECODE "Base64 decode failed."
-#define CODE_ERR_BASE64_IM_DECODE 301 //  base64字符串解析成功，但读取到的内容无法被opencv解码 
-#define MSG_ERR_BASE64_IM_DECODE "Base64 data imdecode failed."
-// 未知
-#define CODE_ERR_UNKNOW 299 // 未知异常
-#define MSG_ERR_UNKNOW "An unknown error has occurred."
+// 認識成功
+#define CODE_OK 100      // 正常終了し、文字を認識した
+#define CODE_OK_NONE 101 // 正常終了したが、文字を認識しなかった
+#define MSG_OK_NONE "画像内に文字が見つかりませんでした。"
+
+// パスからの画像読み込み失敗
+#define CODE_ERR_PATH_EXIST 200 // 画像パスが存在しない
+#define MSG_ERR_PATH_EXIST(p) "画像パスが存在しません。パス: \"" + p + "\""
+
+#define CODE_ERR_PATH_CONV 201 // 画像パスをstringからwstringへ変換できない
+#define MSG_ERR_PATH_CONV(p) "画像パスをUTF-16のwstringへ変換できませんでした。パス: \"" + p + "\""
+
+#define CODE_ERR_PATH_READ 202 // 画像パスは存在するが、ファイルを開けない
+#define MSG_ERR_PATH_READ(p) "画像ファイルを開けませんでした。パス: \"" + p + "\""
+
+#define CODE_ERR_PATH_DECODE 203 // 画像ファイルは開けたが、内容をOpenCVでデコードできない
+#define MSG_ERR_PATH_DECODE(p) "画像のデコードに失敗しました。パス: \"" + p + "\""
+
+#define CODE_ERR_LOAD_JSON 204 // JSONの読み込みに失敗
+#define MSG_ERR_LOAD_JSON(p) "文字列をJSONとして読み込めませんでした。入力値: \"" + p + "\""
+
+#define CODE_ERR_JSON_NO_IMAGE 205 // JSON内に画像の指定が存在しない
+#define MSG_ERR_JSON_NO_IMAGE(p) "JSON文字列内に'imagePath'要素がありません。入力値: \"" + p + "\""
+
+// クリップボードからの画像読み込み失敗
+#define CODE_ERR_CLIP_OPEN 210 // クリップボードを開けない（OpenClipboard）
+#define MSG_ERR_CLIP_OPEN "クリップボードを開けませんでした。"
+
+#define CODE_ERR_CLIP_EMPTY 211 // クリップボードが空（GetPriorityClipboardFormatがNULL）
+#define MSG_ERR_CLIP_EMPTY "クリップボードが空です。"
+
+#define CODE_ERR_CLIP_FORMAT 212 // クリップボードの形式に対応していない（GetPriorityClipboardFormatが-1）
+#define MSG_ERR_CLIP_FORMAT "クリップボードのデータ形式が無効です。"
+
+#define CODE_ERR_CLIP_DATA 213 // クリップボードのデータハンドルを取得できない。通常は他のプログラムがクリップボードを使用している場合に発生する（GetClipboardDataがNULL）
+#define MSG_ERR_CLIP_DATA "クリップボードのデータハンドルを取得できませんでした。"
+
+#define CODE_ERR_CLIP_FILES 214 // クリップボード内のファイル数が1ではない（DragQueryFile != 1）
+#define MSG_ERR_CLIP_FILES(n) "クリップボード内のファイル数が不正です。ファイル数: " + std::to_string(n)
+
+#define CODE_ERR_CLIP_GETOBJ 215 // クリップボード内のビットマップオブジェクト情報を取得できない（GetObjectがNULL）
+#define MSG_ERR_CLIP_GETOBJ "クリップボード内のビットマップオブジェクトを取得できませんでした。"
+
+#define CODE_ERR_CLIP_BITMAP 216 // クリップボードからビットマップデータを取得できない（GetBitmapBitsでコピーされたバイト数が0）
+#define MSG_ERR_CLIP_BITMAP "クリップボードからビットマップデータを取得できませんでした。"
+
+#define CODE_ERR_CLIP_CHANNEL 217 // クリップボード内のビットマップのチャンネル数に対応していない（nChannelsが1、3、4以外）
+#define MSG_ERR_CLIP_CHANNEL(n) "クリップボード内の画像のチャンネル数が不正です。チャンネル数: " + std::to_string(n)
+
+// Base64からの画像読み込み失敗
+#define CODE_ERR_BASE64_DECODE 300 // Base64文字列のデコードに失敗
+#define MSG_ERR_BASE64_DECODE "Base64のデコードに失敗しました。"
+
+#define CODE_ERR_BASE64_IM_DECODE 301 // Base64文字列のデコードには成功したが、内容をOpenCVで画像としてデコードできない
+#define MSG_ERR_BASE64_IM_DECODE "Base64データを画像としてデコードできませんでした。"
+
+// 不明なエラー
+#define CODE_ERR_UNKNOW 299 // 不明な例外
+#define MSG_ERR_UNKNOW "不明なエラーが発生しました。"
 
 #endif

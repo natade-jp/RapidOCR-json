@@ -1,42 +1,46 @@
+ï»¿
 #ifndef _tools_
 #define _tools_
-#include "tools_flags.h" // ±êÖ¾
+
+#include "tools_flags.h" // ãƒ•ãƒ©ã‚°
 #include "nlohmann_json.hpp"
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 
 namespace tool {
-    // ==================== ²ÎÊı ====================
-    // Àä²ÎÊı£¬Æô¶¯Ç°Éè¶¨ 
-    extern bool ensureAscii; // Êä³öjsonÊÇ·ñ×ªascii 
-    extern bool ensureLogger; // ÆôÓÃÈÕÖ¾Êä³ö 
-    extern std::string modelsDir; // Ä£ĞÍ¿âÄ¿Â¼ 
-    extern std::string modelDetPath; // Ä¬ÈÏ¼ì²âÄ£ĞÍ 
-    extern std::string modelClsPath; // Ä¬ÈÏ·½Ïò·ÖÀàÄ£ĞÍ 
-    extern std::string modelRecPath; // Ä¬ÈÏÊ¶±ğÄ£ĞÍ 
-    extern std::string keysPath; // Ä¬ÈÏ×Öµä 
-    extern int numThread; // Ïß³ÌÊı 
-    extern int flagGpu; // Ê¹ÓÃµÄGPU±àºÅ£¬²»Ê¹ÓÃÎª-1 
-    // ÈÈ²ÎÊı£¬Æô¶¯ºó¿ÉĞŞ¸Ä 
-    extern int padding; // Ô¤´¦Àí°×±ß¿í¶È 
-    extern int maxSideLen; // ³¤±ßËõ·ÅÖÁ¸ÃÖµ 
-    extern float boxScoreThresh; // ÎÄ×Ö¿òÖÃĞÅ¶ÈÃÅÏŞ 
-    extern float boxThresh;
-    extern float unClipRatio; // µ¥¸öÎÄ×Ö¿ò´óĞ¡±¶ÂÊ£¬Ô½´óÊ±µ¥¸öÎÄ×Ö¿òÔ½´ó
-    extern bool doAngle; // ÆôÓÃÎÄ×Ö·½Ïò¼ì²â 
-    extern bool mostAngle; // ÆôÓÃ½Ç¶ÈÍ¶Æ±
-    extern bool isEnsureAsci; // ÊÇ·ñ×ªascii 
+    // ==================== ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ ====================
 
-    // ==================== º¯Êı ====================
+    // ã‚³ãƒ¼ãƒ«ãƒ‰ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ï¼šèµ·å‹•å‰ã«è¨­å®š
+    extern bool ensureAscii;              // å‡ºåŠ›ã™ã‚‹JSONã‚’ASCIIã¸å¤‰æ›ã™ã‚‹ã‹
+    extern bool ensureLogger;             // ãƒ­ã‚°å‡ºåŠ›ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹
+    extern std::string modelsDir;         // ãƒ¢ãƒ‡ãƒ«æ ¼ç´ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+    extern std::string modelDetPath;      // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®æ–‡å­—æ¤œå‡ºãƒ¢ãƒ‡ãƒ«
+    extern std::string modelClsPath;      // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®æ–‡å­—æ–¹å‘åˆ†é¡ãƒ¢ãƒ‡ãƒ«
+    extern std::string modelRecPath;      // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®æ–‡å­—èªè­˜ãƒ¢ãƒ‡ãƒ«
+    extern std::string keysPath;          // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®è¾æ›¸ãƒ•ã‚¡ã‚¤ãƒ«
+    extern int numThread;                 // ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+    extern int flagGpu;                   // ä½¿ç”¨ã™ã‚‹GPUç•ªå·ï¼ˆä½¿ç”¨ã—ãªã„å ´åˆã¯-1ï¼‰
+
+    // ãƒ›ãƒƒãƒˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ï¼šèµ·å‹•å¾Œã«å¤‰æ›´å¯èƒ½
+    extern int padding;                   // å‰å‡¦ç†ã§è¿½åŠ ã™ã‚‹ä½™ç™½ã®å¹…
+    extern int maxSideLen;                // é•·è¾ºã‚’ã“ã®å€¤ã¾ã§ç¸®æ”¾ã™ã‚‹
+    extern float boxScoreThresh;          // æ–‡å­—é ˜åŸŸã®ä¿¡é ¼åº¦ã—ãã„å€¤
+    extern float boxThresh;
+    extern float unClipRatio;             // æ–‡å­—é ˜åŸŸã®æ‹¡å¤§å€ç‡ï¼ˆå€¤ãŒå¤§ãã„ã»ã©é ˜åŸŸã‚‚å¤§ãããªã‚‹ï¼‰
+    extern bool doAngle;                   // æ–‡å­—æ–¹å‘ã®æ¤œå‡ºã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹
+    extern bool mostAngle;                 // è§’åº¦ã®å¤šæ•°æ±ºã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹
+    extern bool isEnsureAsci;              // ASCIIã¸å¤‰æ›ã™ã‚‹ã‹
+
+    // ==================== é–¢æ•° ====================
     void get_state(int&, std::string&);
     void set_state(int code = CODE_INIT, std::string msg = "");
 
     void load_congif_file();
 
-	void print_json(const nlohmann::json&);
-	void print_ocr_fail(int, const std::string&); 
-	void print_now_fail();
-	std::string load_json_str(std::string&);
+    void print_json(const nlohmann::json&);
+    void print_ocr_fail(int, const std::string&);
+    void print_now_fail();
+    std::string load_json_str(std::string&);
 
     cv::Mat imread_utf8(std::string, int flags = cv::IMREAD_COLOR);
     cv::Mat imread_base64(std::string, int flags = cv::IMREAD_COLOR);

@@ -91,10 +91,10 @@ if %flag% == 0 (
     call :buildALL
 )^
 else if %flag% == 1 (
-    call :gen2019-x86
+    call :gen2022-x86
 )^
 else if %flag% == 2 (
-    call :gen2019-x64
+    call :gen2022-x64
 )^
 else (
     echo "入力エラー！Input Error!"
@@ -103,21 +103,21 @@ else (
 GOTO:EOF
 
 :buildALL
-call :gen2019-x86
-call :gen2019-x64
+call :gen2022-x86
+call :gen2022-x64
 GOTO:EOF
 
-:gen2019-x86
-mkdir build-win-vs2019-x86
-pushd build-win-vs2019-x86
-call :cmakeParams "Visual Studio 16 2019" "Win32"
+:gen2022-x86
+mkdir build-win-vs2022-x86
+pushd build-win-vs2022-x86
+call :cmakeParams "Visual Studio 17 2022" "Win32"
 popd
 GOTO:EOF
 
-:gen2019-x64
-mkdir build-win-vs2019-x64
-pushd build-win-vs2019-x64
-call :cmakeParams "Visual Studio 16 2019" "x64"
+:gen2022-x64
+mkdir build-win-vs2022-x64
+pushd build-win-vs2022-x64
+call :cmakeParams "Visual Studio 17 2022" "x64"
 popd
 GOTO:EOF
 

@@ -1,8 +1,8 @@
-#include "OcrLite.h"
+﻿#include "OcrLite.h"
 #include "OcrUtils.h"
 #include <stdarg.h> //windows&linux
 #include "tools.h"
-#include "tools_flags.h" // 标志
+#include "tools_flags.h" // フラグ
 
 OcrLite::OcrLite() {}
 
@@ -77,11 +77,12 @@ OcrResult OcrLite::detect(const char* path, const char *imgName,
                           const int padding, const int maxSideLen,
                           float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
-    //cv::Mat originSrc = imread(imgFile, cv::IMREAD_COLOR);//default : BGR 干掉该死的imread 
+    // cv::Mat originSrc = imread(imgFile, cv::IMREAD_COLOR); デフォルト：BGR。厄介なimreadは使用しない
     cv::Mat originSrc = tool::imread_utf8(imgFile, cv::IMREAD_COLOR);
-    if (!originSrc.data) { // 读图失败 
+    
+    if (!originSrc.data) { // 画像の読み込みに失敗
         OcrResult res;
-        res.dbNetTime = CODE_ERR_MAT_NULL; // 返回读取失败 
+        res.dbNetTime = CODE_ERR_MAT_NULL; // 読み込み失敗を返す
         return res;
     }
     int originMaxSide = (std::max)(originSrc.cols, originSrc.rows);

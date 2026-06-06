@@ -1,4 +1,4 @@
-#include "CrnnNet.h"
+﻿#include "CrnnNet.h"
 #include "OcrUtils.h"
 #include <fstream>
 #include <numeric>
@@ -63,7 +63,7 @@ void CrnnNet::initModel(const std::string &pathStr, const std::string &keysPath)
     std::ifstream in(keysPath.c_str());
     std::string line;
     if (in) {
-        while (getline(in, line)) {// line中不包括每行的换行符
+        while (getline(in, line)) { // lineには各行の改行文字は含まれない
             keys.push_back(line);
         }
     } else {

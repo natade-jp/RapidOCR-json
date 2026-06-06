@@ -1,11 +1,11 @@
-#include <opencv2/imgproc.hpp>
+﻿#include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <numeric>
 #include "OcrUtils.h"
 #include "clipper.hpp"
 
 double getCurrentTime() {
-    return (static_cast<double>(cv::getTickCount())) / cv::getTickFrequency() * 1000;//单位毫秒
+    return (static_cast<double>(cv::getTickCount())) / cv::getTickFrequency() * 1000;// 単位：ミリ秒
 }
 
 //onnxruntime init windows
