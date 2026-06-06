@@ -99,6 +99,38 @@ RapidOCR_json.exe --ensureAscii=1
 RapidOCR_json.exe --doAngle=0 --mostAngle=0 --numThread=12 --padding=100 --image_path="D:/images/test(1).png"
 ```
 
+### 言語オプション例
+
+**日本語**
+
+```text
+RapidOCR-json.exe --models=models --det=ch_PP-OCRv3_det_infer.onnx --cls=ch_ppocr_mobile_v2.0_cls_infer.onnx --rec=rec_japan_PP-OCRv3_infer.onnx --keys=dict_japan.txt --image=test.png
+```
+
+**簡体字**
+
+```text
+RapidOCR-json.exe --models=models --det=ch_PP-OCRv3_det_infer.onnx --cls=ch_ppocr_mobile_v2.0_cls_infer.onnx --rec=ch_PP-OCRv3_rec_infer.onnx --keys=dict_chinese.txt --image=test.png
+```
+
+**繁体字**
+
+```text
+RapidOCR-json.exe --models=models --det=ch_PP-OCRv3_det_infer.onnx --cls=ch_ppocr_mobile_v2.0_cls_infer.onnx --rec=rec_chinese_cht_PP-OCRv3_infer.onnx --keys=dict_chinese_cht.txt --image=test.png
+```
+
+**韓国語**
+
+```text
+RapidOCR-json.exe --models=models --det=ch_PP-OCRv3_det_infer.onnx --cls=ch_ppocr_mobile_v2.0_cls_infer.onnx --rec=rec_korean_PP-OCRv3_infer.onnx --keys=dict_korean.txt --image=test.png
+```
+
+**英語**
+
+```text
+RapidOCR-json.exe --models=models --det=ch_PP-OCRv3_det_infer.onnx --cls=ch_ppocr_mobile_v2.0_cls_infer.onnx --rec=rec_en_PP-OCRv3_infer.onnx --keys=dict_chinese.txt --image=test.png
+```
+
 ## 戻り値
 
 APIからOCRを1回呼び出すたびに、成功・失敗にかかわらずオブジェクトが返されます。
